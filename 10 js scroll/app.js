@@ -20,10 +20,54 @@ navToggle.addEventListener("click", function () {
   if (containerHeight === 0) {
     linksContainer.style.height = `${linksHeight}px`;
   } else {
-      linksContainer.style.height = 0;
+    linksContainer.style.height = 0;
   }
 });
 // ********** fixed navbar ************
+const nav = document.getElementById("nav");
+const topUpBtn = document.querySelector(".top-link");
 
+window.addEventListener("scroll", function () {
+  const scrollHeight = window.pageYOffset;
+  const navHeight = nav.getBoundingClientRect().height;
+  if (scrollHeight > navHeight) {
+    nav.classList.add("fixed-nav");
+  } else {
+    nav.classList.remove("fixed-nav");
+  }
+
+  // adding topup button
+  if (scrollHeight > 500) {
+    topUpBtn.classList.add("show-link");
+  } else {
+    topUpBtn.classList.remove("show-link");
+  }
+});
 // ********** smooth scroll ************
 // select links
+const showLink = document.querySelectorAll(".scroll-link");
+showLink.forEach(function (link) {
+  link.addEventListener("click", function (event) {
+    // prevent default
+    event.preventDefault();
+    // navigate to specific spot
+    const id = event.currentTarget.getAttribute("href").slice(1);
+    const element = document.getElementById(id);
+    // calculate the height
+    const navHeight = nav.getBoundingClientRect().height;
+    const containerHeight = linksContainer.getBoundingClientRect().height;
+    const fixedNav = nav.classList.contains("fixed-nav");
+    let position = element.offsetTop - navHeight;
+    if (!fixedNav) {
+      position = position - navHeight;
+    }
+    if (navHeight > 82) {
+      position = position + containerHeight;
+    }
+    window.scrollTo({
+      left: 0,
+      top: position,
+    });
+    linksContainer.style.height = 0;
+  });
+});
